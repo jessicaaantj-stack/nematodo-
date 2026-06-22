@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nematodos Pulmonares</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --lung-pink:    #E8D5C4;
+    --deep-teal:    #1A3A3A;
+    --mid-teal:     #2D5A5A;
+    --accent:       #C4704A;
+    --accent-light: #E8956A;
+    --green-cycle:  #4A7C59;
+    --green-light:  #D4EAD8;
+    --amber:        #C4A24A;
+    --amber-light:  #F5EAC8;
+    --text-main:    #1A2A2A;
+    --text-soft:    #4A6060;
+    --bg:           #F5F0EB;
+    --card-bg:      #FDFAF7;
+    --border:       #D8CEC4;
+    --white:        #FFFFFF;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text-main);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--deep-teal);
+    color: var(--white);
+    padding: 64px 40px 56px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 120% at 90% 50%, rgba(196,112,74,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--accent-light);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    line-height: 1.1;
+    max-width: 680px;
+    margin-bottom: 20px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--lung-pink);
+  }
+  .hero-sub {
+    color: rgba(255,255,255,0.65);
+    max-width: 520px;
+    font-size: 14px;
+  }
+  .hero-badges {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+  }
+  .badge {
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 4px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 0.04em;
+  }
+  .badge.direct { border-color: var(--green-cycle); color: #8FD9A8; }
+  .badge.indirect { border-color: var(--accent); color: var(--accent-light); }
+
+  /* ── NAV TABS ── */
+  .tabs-bar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex;
+    gap: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .tab-btn {
+    padding: 16px 24px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-soft);
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .tab-btn:hover { color: var(--text-main); }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ── MAIN ── */
+  .main { max-width: 900px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── SECTION HEADER ── */
+  .s-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+  .s-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .s-icon.direct { background: var(--green-light); }
+  .s-icon.indirect { background: #FFE8D8; }
+  .s-icon.compare { background: var(--amber-light); }
+  .s-title h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    color: var(--text-main);
+    line-height: 1.2;
+  }
+  .s-title p {
+    font-size: 13px;
+    color: var(--text-soft);
+    margin-top: 2px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .card-header:hover { background: rgba(0,0,0,0.02); }
+  .card-header-left { display: flex; align-items: center; gap: 14px; }
+  .card-taxon {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--text-soft);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .card-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.25rem;
+    font-style: italic;
+    color: var(--text-main);
+  }
+  .card-host {
+    font-size: 12px;
+    color: var(--text-soft);
+    margin-top: 1px;
+  }
+  .tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.04em;
+  }
+  .tag.direct { background: var(--green-light); color: var(--green-cycle); }
+  .tag.indirect { background: #FFE8D8; color: var(--accent); }
+  .chevron {
+    font-size: 18px;
+    color: var(--text-soft);
+    transition: transform 0.3s;
+    margin-left: 12px;
+  }
+  .card.open .chevron { transform: rotate(180deg); }
+
+  .card-body {
+    display: none;
+    padding: 0 24px 24px;
+    border-top: 1px solid var(--border);
+  }
+  .card.open .card-body { display: block; }
+
+  /* ── GRID BLOCKS ── */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 20px;
+  }
+  @media(max-width:640px){ .grid-2 { grid-template-columns: 1fr; } }
+
+  .info-block {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .info-block h4 {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-soft);
+    margin-bottom: 10px;
+  }
+  .info-block ul { padding-left: 18px; }
+  .info-block li { font-size: 13.5px; margin-bottom: 5px; color: var(--text-main); }
+  .info-block p { font-size: 13.5px; color: var(--text-main); }
+
+  /* ── CYCLE VISUAL ── */
+  .cycle-box {
+    margin-top: 20px;
+    background: var(--deep-teal);
+    border-radius: 10px;
+    padding: 20px 24px;
+    color: white;
+  }
+  .cycle-box h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 14px;
+  }
+  .cycle-steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .cycle-step {
+    background: rgba(255,255,255,0.1);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.9);
+  }
+  .cycle-arrow {
+    color: var(--accent-light);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .cycle-note {
+    margin-top: 12px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 10px;
+  }
+
+  /* ── DRUG ROW ── */
+  .drug-row {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .drug-pill {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 12.5px;
+  }
+  .drug-pill strong { color: var(--accent); font-weight: 600; }
+
+  /* ── DIAG BOX ── */
+  .diag-highlight {
+    margin-top: 16px;
+    background: var(--amber-light);
+    border-left: 3px solid var(--amber);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 16px;
+    font-size: 13px;
+  }
+  .diag-highlight strong { color: #7A5A00; }
+
+  /* ── COMPARE TABLE ── */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    font-size: 13px;
+  }
+  .compare-table th {
+    background: var(--deep-teal);
+    color: white;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+  .compare-table th:first-child { border-radius: 8px 0 0 0; }
+  .compare-table th:last-child { border-radius: 0 8px 0 0; }
+  .compare-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:nth-child(even) td { background: rgba(0,0,0,0.02); }
+  .compare-table td:first-child {
+    font-style: italic;
+    font-weight: 500;
+    font-family: 'DM Serif Display', serif;
+    font-size: 14px;
+  }
+  .ci { color: var(--green-cycle); font-size: 11px; font-weight:600; }
+  .ii { color: var(--accent); font-size: 11px; font-weight:600; }
+
+  /* ── LARVA DIFF ── */
+  .larva-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-top: 20px;
+  }
+  .larva-card {
+    border-radius: 10px;
+    padding: 18px;
+    border: 1px solid var(--border);
+  }
+  .larva-card h4 {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  .larva-card .size {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .larva-card p { font-size: 12.5px; color: var(--text-soft); }
+  .lc-dicty { background: var(--green-light); border-color: #8FC4A0; }
+  .lc-aeluro { background: #FFE8D8; border-color: #E8A070; }
+  .lc-angio { background: #E8E0F0; border-color: #B090C8; }
+
+  /* ── QUIZ ── */
+  .quiz-q {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+  .quiz-q p {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 14px;
+    color: var(--text-main);
+  }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-opt {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 10px 16px;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s, border-color 0.15s;
+    color: var(--text-main);
+  }
+  .quiz-opt:hover { background: var(--border); }
+  .quiz-opt.correct { background: var(--green-light); border-color: var(--green-cycle); color: var(--green-cycle); font-weight: 600; }
+  .quiz-opt.wrong { background: #FFE0DC; border-color: #D06050; color: #9A3020; }
+  .quiz-feedback {
+    margin-top: 10px;
+    font-size: 12.5px;
+    color: var(--text-soft);
+    display: none;
+    padding: 10px 14px;
+    background: var(--bg);
+    border-radius: 6px;
+    border-left: 3px solid var(--amber);
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-score {
+    text-align: center;
+    padding: 24px;
+    background: var(--deep-teal);
+    color: white;
+    border-radius: 12px;
+    margin-top: 24px;
+    display: none;
+  }
+  .quiz-score h3 { font-family: 'DM Serif Display', serif; font-size: 1.8rem; margin-bottom: 6px; }
+  .quiz-score p { color: rgba(255,255,255,0.65); font-size: 14px; }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 32px;
+    font-size: 12px;
+    color: var(--text-soft);
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Enfermedades Infecciosas y Parasitarias · Capítulo 11</div>
+  <h1>Nematodos <em>pulmonares</em>:<br>ciclos directos e indirectos</h1>
+  <p class="hero-sub">Material de estudio interactivo. Explora los parásitos, compáralos y pon a prueba tu comprensión.</p>
+  <div class="hero-badges">
+    <span class="badge direct">● Ciclo directo</span>
+    <span class="badge indirect">● Ciclo indirecto</span>
+    <span class="badge">Rumiantes · Felinos · Caninos</span>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="showTab('directos')">Ciclo Directo</button>
+  <button class="tab-btn" onclick="showTab('indirectos')">Ciclo Indirecto</button>
+  <button class="tab-btn" onclick="showTab('comparacion')">Comparación</button>
+  <button class="tab-btn" onclick="showTab('caso')">Caso Clínico</button>
+  <button class="tab-btn" onclick="showTab('quiz')">Autoevaluación</button>
+</div>
+
+<div class="main">
+
+<!-- ═══════════════════════════════════ DIRECTOS ═══════════════════════════════════ -->
+<div class="section active" id="directos">
+  <div class="s-header">
+    <div class="s-icon direct">🌿</div>
+    <div class="s-title">
+      <h2>Ciclo directo</h2>
+      <p>Sin hospedero intermediario obligatorio · Larvas infecciosas en el ambiente</p>
+    </div>
+  </div>
+
+  <!-- D. viviparus -->
+  <div class="card" id="card-dv">
+    <div class="card-header" onclick="toggleCard('card-dv')">
+      <div class="card-header-left">
+        <div>
+          <div class="card-taxon">Bovinos · Bronquios</div>
+          <div class="card-name">Dictyocaulus viviparus</div>
+          <div class="card-host">Terneros 2–12 meses · «Husk» · Tos de los terneros</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="tag direct">Directo</span>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="grid-2">
+        <div class="info-block">
+          <h4>Morfología</h4>
+          <ul>
+            <li>Filiforme, blanquecino a grisáceo</li>
+            <li>Machos: 4–6 cm · Hembras: 6–8 cm</li>
+            <li>Adultos en bronquios y bronquiolos</li>
+          </ul>
+        </div>
+        <div class="info-block">
+          <h4>Signología clínica</h4>
+          <ul>
+            <li>Tos seca → traqueobronquitis mucopurulenta</li>
+            <li>Tapones de moco, colapso lobular</li>
+            <li>Morbilidad &gt;50% en brotes</li>
+            <li>Primavera/inicio otoño (terneros 1° año)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cycle-box">
+        <h4>Ciclo biológico · Período prepatente ~28 días</h4>
+        <div class="cycle-steps">
+          <span class="cycle-step">Huevos en bronquios</span>
+          <span class="cycle-arrow">→</span>
+          <span class="cycle-step">Tos → deglución</span>
+          <span class="cycle-arrow">→</span>
+          <span class="cycle-step">L1 en heces</span>
+          <span class="cycle-arrow">→</span>
+          <span class="cycle-step">L3 ambiental (5–7 días, 10–25°C)</span>
+          <span class="cycle-arrow">→</span>
+          <span class="cycle-step">Ingestión con pasto</span>
+          <span class="cycle-arrow">→</span>
+          <span class="cycle-step">L4 en bronquiolos (día 7)</span>
+        </div>
+        <div class="cycle-note">⚡ <strong>Pilobolus spp.</strong>: hongo coprófilo que proyecta larvas L3 hasta 1 metro al estallar su esporangiófora, ampliando la contaminación de la pastura.</div>
+      </div>
+
+      <div class="grid-2" style="margin-top:16px;">
+        <div class="info-block">
+          <h4>Fases patogénicas</h4>
+          <ul>
+            <li><strong>Penetración</strong> (días 1–7): subclínica</li>
+            <li><strong>Prepatente</strong> (días 8–25): edema bronquiolar, tos seca</li>
+            <li><strong>Patente</strong> (días 26–55): traqueobronquitis severa</li>
+            <li><strong>Resolución</strong>: posible fibrosis residual</li>
+          </ul>
+        </div>
+        <div class="info-block">
+          <h4>Diagnóstico</h4>
+          <ul>
+            <li><strong>Baermann</strong> sobre heces frescas (10–15 g)</li>
+            <li>L1 ≈ 380 µm · célula intestinal granulosa · sin vaina</li>
+            <li>Flotación convencional: <strong>ineficaz</strong></li>
+            <li>Necropsia: adultos blancos en tráquea/bronquios</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="info-block" style="margin-top:16px;">
+        <h4>Tratamiento</h4>
+        <div class="drug-row">
+          <span class="drug-pill"><strong>Fenbendazol</strong> 7,5 mg/kg PO</span>
+          <span class="drug-pill"><strong>Albendazol</strong> 7,5 mg/kg PO</span>
+          <span class="drug-pill"><strong>Levamisol</strong> 7,5 mg/kg SC/IM</span>
+          <span class="drug-pill"><strong>Ivermectina</strong> 0,2 mg/kg SC</span>
+          <span class="drug-pill"><strong>Doramectina</strong> 0,2 mg/kg SC/IM</span>
+        </div>
+        <p style="font-size:12px;color:var(--text-soft);margin-top:10px;">⚠️ Rotación de grupos farmacológicos recomendada. Complementar con traslado a pradera limpia.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- D. filaria -->
+  <div class="card" id="card-df">
+    <div class="card-header" onclick="toggleCard('card-df')">
+      <div class="card-header-left">
+        <div>
+          <div class="card-taxon">Ovinos / Caprinos · Bronquios</div>
+          <div class="card-name">Dictyocaulus filaria</div>
+          <div class="card-host">Corderos y cabritos en primera temporada</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="tag direct">Directo</span>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="grid-2">
+        <div class="info-block">
+          <h4>Diferencias con D. viviparus</h4>
+          <ul>
+            <li>Hembras &gt;10 cm (criterio diferencial clave)</li>
+            <li>Machos 3–8 cm (rango superpuesto)</li>
+            <li>Asociación con Pilobolus: menos documentada en ovinos</li>
+            <li>Período prepatente: 28–35 días</li>
+          </ul>
+        </div>
+        <div class="info-block">
+          <h4>Consideraciones especiales</h4>
+          <ul>
+            <li>Coinfección frecuente con <em>Muellerius capillaris</em> (ciclo indirecto, caracoles)</li>
+            <li>Caprinos metabolizan antihelmínticos más rápido → dosis 50% mayor posible</li>
+            <li>Adultos con exposición previa: forma subclínica o leve</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="diag-highlight">
+        <strong>Diagnóstico:</strong> Baermann igual que en bovinos (L1 en heces). <br>
+        <strong>Tratamiento:</strong> Fenbendazol 5 mg/kg PO (ovinos) · Levamisol 7,5 mg/kg SC · Ivermectina 0,2 mg/kg SC
+      </div>
+    </div>
+  </div>
+</div><!-- /directos -->
+
+
+<!-- ═══════════════════════════════════ INDIRECTOS ═══════════════════════════════════ -->
+<div class="section" id="indirectos">
+  <div class="s-header">
+    <div class="s-icon indirect">🐌</div>
+    <div class="s-title">
+      <h2>Ciclo indirecto</h2>
+      <p>Requieren hospedero intermediario molusco · Posibles hospederos paraténicos</p>
+    </div>
+  </div>
+
+  <!-- A. abstrusus -->
+  <div class="card" id="card-aa">
+    <div class="card-header" onclick="toggleCard('card-aa')">
+      <div class="card-header-left">
+        <div>
+          <div class="card-taxon">Felinos · Bronquiolos terminales / Ductos alveolares</div>
+          <div class="card-name">Aelurostrongylus abstrusus</div>
+          <div class="card-host">Principal parásito pulmonar del gato doméstico</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="tag indirect">Indirecto</span>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="grid-2">
+        <div class="info-block">
+          <h4>Morfología del adulto</h4>
+          <ul>
+            <li>Delgados, 4–10 mm</li>
+            <li>Residen en bronquiolos terminales y ductos alveolares</li>
+            <li>Familia Angiostrongylidae</li>
+          </ul>
+        </div>
+        <div class="info-block">
+          <h4>Signología</h4>
+          <ul>
+            <li>Tos crónica, disnea de esfuerzo</li>
+            <li>Sibilancias espiratorias</li>
+            <li>Disnea en reposo (casos graves)</li>
+            <li>Radiografía: patrón nodular-intersticial bilateral</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cycle-box">
+        <h4>Ciclo biológico · Dos hospederos intermediarios</h4>
+        <div class="cycle-steps">
+          <span class="cycle-step">L1 en heces del gato</span>
+          <span class="cycle-arrow">→</span>
+          <span class="cycle-step">Molusco (Helix, Arion, Deroceras) → L3</span>
+          <span class="cycle-arrow">→</span>
+          <span class="cycle-step">Hospedero paraténico (ave, reptil, roedor) acumula L3</span>
+          <span class="cycle-arrow">→</span>
+          <span class="cycle-step">Gato ingiere paraténico (cacería)</span>
+          <span class="cycle-arrow">→</span>
+          <span class="cycle-step">Adultos en pulmón</span>
+        </div>
+        <div class="cycle-note">🐈 El gato con acceso al exterior y hábito de caza tiene riesgo sustancialmente mayor. La vía principal es la ingestión de hospederos paraténicos, no el molusco directamente.</div>
+      </div>
+
+      <div class="diag-highlight" style="margin-top:16px;">
+        <strong>Diagnóstico clave · Baermann:</strong> L1 ≈ 360–400 µm con <strong>cola en «S» + espina subterminal dorsal</strong>. Este rasgo morfológico distingue <em>A. abstrusus</em> de <em>A. vasorum</em> (cola recta) y Strongyloides (&lt;300 µm).<br><br>
+        Radiografía: nódulos 1–5 mm de bordes difusos, bilaterales. LBA si Baermann negativo con alta sospecha.
+      </div>
+
+      <div class="info-block" style="margin-top:16px;">
+        <h4>Tratamiento</h4>
+        <div class="drug-row">
+          <span class="drug-pill"><strong>Fenbendazol</strong> 50 mg/kg PO × 7–14 días</span>
+          <span class="drug-pill"><strong>Imidacloprid + Moxidectina</strong> spot-on (Advocate®) × 1–2 aplicaciones</span>
+        </div>
+        <p style="font-size:12px;color:var(--text-soft);margin-top:10px;">En casos graves: broncodilatadores como soporte. Reevaluar a las 4 semanas y repetir Baermann al día 30.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- A. vasorum -->
+  <div class="card" id="card-av">
+    <div class="card-header" onclick="toggleCard('card-av')">
+      <div class="card-header-left">
+        <div>
+          <div class="card-taxon">Caninos · Arteria pulmonar / Ventrículo derecho</div>
+          <div class="card-name">Angiostrongylus vasorum</div>
+          <div class="card-host">Agente emergente · Coagulopatía + signos neurológicos</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="tag indirect">Indirecto</span>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="grid-2">
+        <div class="info-block">
+          <h4>Morfología del adulto</h4>
+          <ul>
+            <li>Rojizos, en arteria pulmonar y VD</li>
+            <li>Machos: 14–20 mm · Hembras: 17–22 mm</li>
+            <li>Hembras depositan huevos en vasos → L1 al parénquima</li>
+          </ul>
+        </div>
+        <div class="info-block">
+          <h4>Tríada clínica orientadora</h4>
+          <ul>
+            <li>🫁 <strong>Respiratorio:</strong> tos, disnea, intolerancia al ejercicio</li>
+            <li>🩸 <strong>Hemorrágico:</strong> hematomas espontáneos, epistaxis, hifema</li>
+            <li>🧠 <strong>Neurológico:</strong> convulsiones, ataxia, paresia (hemorragias intracraneales)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cycle-box">
+        <h4>Ciclo biológico · Período prepatente 35–60 días</h4>
+        <div class="cycle-steps">
+          <span class="cycle-step">L1 en heces del perro</span>
+          <span class="cycle-arrow">→</span>
+          <span class="cycle-step">Molusco (Arion, Helix) → L3</span>
+          <span class="cycle-arrow">→</span>
+          <span class="cycle-step">Paraténico opcional (ranas, sapos)</span>
+          <span class="cycle-arrow">→</span>
+          <span class="cycle-step">Perro ingiere babosa/caracol (activo o accidental)</span>
+          <span class="cycle-arrow">→</span>
+          <span class="cycle-step">Adultos en arteria pulmonar</span>
+        </div>
+        <div class="cycle-note">📍 Chile: reportes confirmados en zonas centro-sur con clima húmedo (condición favorable para densidad de moluscos).</div>
+      </div>
+
+      <div class="grid-2" style="margin-top:16px;">
+        <div class="info-block">
+          <h4>Diagnóstico</h4>
+          <ul>
+            <li>Baermann: L1 350–400 µm, cola recta o levemente ondulada, <strong>sin</strong> ondulación en «S» ni espina</li>
+            <li>ELISA <strong>Angio Detect®</strong>: método más sensible (funciona en período prepatente)</li>
+            <li>Perfil de coagulación: TP, TTPA, plaquetas, fibrinógeno</li>
+          </ul>
+        </div>
+        <div class="info-block">
+          <h4>Patogenia vascular</h4>
+          <ul>
+            <li>Arteritis proliferativa → hipertensión pulmonar → sobrecarga VD</li>
+            <li>Neumonía intersticial eosinofílica (larvas en parénquima)</li>
+            <li>Coagulopatía: trombocitopenia + prolongación TP/TTPA + tendencia hemorrágica</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="info-block" style="margin-top:16px;">
+        <h4>Tratamiento</h4>
+        <div class="drug-row">
+          <span class="drug-pill"><strong>Fenbendazol</strong> 20–50 mg/kg PO × 21 días</span>
+          <span class="drug-pill"><strong>Imidacloprid + Moxidectina</strong> spot-on (Advocate®)</span>
+        </div>
+        <p style="font-size:12px;color:var(--text-soft);margin-top:10px;">Con coagulopatía activa: plasma fresco congelado + vitamina K₁ ± transfusiones. Pronóstico reservado con signología neurológica.</p>
+      </div>
+    </div>
+  </div>
+</div><!-- /indirectos -->
+
+
+<!-- ═══════════════════════════════════ COMPARACIÓN ═══════════════════════════════════ -->
+<div class="section" id="comparacion">
+  <div class="s-header">
+    <div class="s-icon compare">🔬</div>
+    <div class="s-title">
+      <h2>Comparación</h2>
+      <p>Resumen de los cuatro agentes pulmonares</p>
+    </div>
+  </div>
+
+  <div class="card" style="border-radius:12px;overflow:hidden;margin-bottom:32px;">
+    <div class="card-body" style="display:block;padding:0;">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Agente</th>
+            <th>Hospedero</th>
+            <th>Ciclo</th>
+            <th>Diagnóstico clave</th>
+            <th>Tratamiento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Dictyocaulus viviparus</td>
+            <td>Bovinos (terneros)</td>
+            <td><span class="ci">DIRECTO</span><br>L3 ambiental + Pilobolus</td>
+            <td>Baermann · L1 ~380 µm</td>
+            <td>Fenbendazol / Ivermectina</td>
+          </tr>
+          <tr>
+            <td>Dictyocaulus filaria</td>
+            <td>Ovinos / Caprinos</td>
+            <td><span class="ci">DIRECTO</span><br>L3 ambiental</td>
+            <td>Baermann · L1 en heces</td>
+            <td>Fenbendazol / Ivermectina</td>
+          </tr>
+          <tr>
+            <td>Aelurostrongylus abstrusus</td>
+            <td>Felinos</td>
+            <td><span class="ii">INDIRECTO</span><br>Molusco + paraténico</td>
+            <td>Baermann · L1 con cola en «S» + espina</td>
+            <td>Fenbendazol 50 mg/kg × 14 d</td>
+          </tr>
+          <tr>
+            <td>Angiostrongylus vasorum</td>
+            <td>Caninos</td>
+            <td><span class="ii">INDIRECTO</span><br>Molusco + paraténico</td>
+            <td>Baermann + Angio Detect® ELISA</td>
+            <td>Fenbendazol 20–50 mg/kg × 21 d</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- LARVAS L1 -->
+  <h3 style="font-family:'DM Serif Display',serif;font-size:1.25rem;margin-bottom:16px;">Morfología diferencial de larvas L1 (Baermann)</h3>
+  <div class="larva-cards">
+    <div class="larva-card lc-dicty">
+      <h4>Dictyocaulus spp.</h4>
+      <div class="size">~380 µm</div>
+      <p>Célula intestinal granulosa · Sin vaina · Cola recta · Alta movilidad</p>
+    </div>
+    <div class="larva-card lc-aeluro">
+      <h4>Aelurostrongylus abstrusus</h4>
+      <div class="size">360–400 µm</div>
+      <p><strong>Cola en «S»</strong> + <strong>espina subterminal dorsal</strong> · Criterio más confiable</p>
+    </div>
+    <div class="larva-card lc-angio">
+      <h4>Angiostrongylus vasorum</h4>
+      <div class="size">350–400 µm</div>
+      <p>Cola recta o levemente ondulada · <strong>Sin</strong> ondulación en «S» ni espina subterminal</p>
+    </div>
+  </div>
+
+  <div class="info-block" style="margin-top:24px; background: var(--amber-light); border: 1px solid var(--amber);">
+    <h4>⚠️ Puntos de confusión frecuentes</h4>
+    <ul>
+      <li>La <strong>flotación coprológica</strong> es ineficaz para todos los nematodos pulmonares: los huevos eclosionan antes de la eliminación fecal y las larvas no flotan.</li>
+      <li><em>A. abstrusus</em> vs. asma felina: el patrón <strong>nodular</strong> en radiografía es más sugerente de aelurostrongilosis; el asma produce hiperinsuflación y eventualmente atelectasia lobar.</li>
+      <li><em>A. vasorum</em>: una <strong>coagulopatía inexplicada</strong> en perro joven con acceso al exterior es señal de alerta aunque no haya síntomas respiratorios prominentes.</li>
+    </ul>
+  </div>
+</div><!-- /comparacion -->
+
+
+<!-- ═══════════════════════════════════ CASO CLÍNICO ═══════════════════════════════════ -->
+<div class="section" id="caso">
+  <div class="s-header">
+    <div class="s-icon" style="background:#E0EEF4;">🐈</div>
+    <div class="s-title">
+      <h2>Caso clínico</h2>
+      <p>Tos crónica y eosinofilia en un gato de vida exterior · Responde las preguntas de razonamiento</p>
+    </div>
+  </div>
+
+  <!-- PRESENTACIÓN -->
+  <div class="card open" id="card-caso-pres" style="border-left: 4px solid var(--accent);">
+    <div class="card-header" onclick="toggleCard('card-caso-pres')">
+      <div class="card-header-left">
+        <div>
+          <div class="card-taxon">Presentación del caso</div>
+          <div class="card-name" style="font-size:1.1rem;">Felpudo · Gato, MC, 4 años · Región de Valparaíso</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="card-body" style="padding-top:20px;">
+      <div class="grid-2">
+        <div class="info-block">
+          <h4>Historia clínica</h4>
+          <ul>
+            <li>Tos crónica de <strong>2 meses</strong> de evolución</li>
+            <li>Inicialmente seca e intermitente → ahora frecuente y húmeda</li>
+            <li>Sibilancias audibles ocasionales</li>
+            <li>Postura durante la tos: cuello extendido, codos separados, boca cerrada</li>
+            <li>Apetito levemente disminuido</li>
+            <li><strong>Sin antiparasitarios en el último año</strong></li>
+            <li>Acceso al jardín · <strong>Cazador habitual de aves y roedores</strong></li>
+          </ul>
+        </div>
+        <div class="info-block">
+          <h4>Examen físico y paraclinicos</h4>
+          <ul>
+            <li>T° 38,9°C · FR 42 rpm · FC 180 lpm</li>
+            <li>Mucosas rosadas · Auscultación cardíaca normal</li>
+            <li>Auscultación pulmonar: <strong>sibilancias espiratorias bilaterales</strong> + crepitantes medioventrales</li>
+            <li>Hemograma: <strong>eosinofilia 18%</strong> (ref. &lt;5%)</li>
+            <li>Radiografía: <strong>patrón broncoalveolar con nódulos de bordes mal definidos</strong>, lóbulos caudales, hiperinsuflación leve</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREGUNTAS INTERACTIVAS -->
+  <h3 style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin:28px 0 16px;">Preguntas de razonamiento clínico</h3>
+  <p style="font-size:13px;color:var(--text-soft);margin-bottom:20px;">Reflexiona antes de ver la respuesta comentada. Haz clic en «Ver resolución» cuando estés listo.</p>
+
+  <!-- P1 -->
+  <div class="card" id="caso-q1">
+    <div class="card-header" onclick="toggleCard('caso-q1')">
+      <div class="card-header-left">
+        <div>
+          <div class="card-taxon">Pregunta 1 · Diagnóstico diferencial</div>
+          <div class="card-name" style="font-size:1rem;font-style:normal;font-family:'Inter',sans-serif;font-weight:500;">¿Cuáles son los tres diagnósticos diferenciales prioritarios y qué datos del caso orientan hacia cada uno?</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="card-body">
+      <div style="background:var(--deep-teal);border-radius:8px;padding:18px 20px;color:white;margin-top:4px;">
+        <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:14px;">Resolución comentada</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div>
+            <div style="font-weight:600;color:var(--accent-light);margin-bottom:4px;">1. Aelurostrongilosis (A. abstrusus)</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.8);">Acceso al exterior + hábito de caza activo (exposición a paraténicos), tos crónica húmeda y progresiva, eosinofilia marcada, patrón nodular-intersticial (más característico de aelurostrongilosis que de asma), sin antiparasitarios recientes.</div>
+          </div>
+          <div>
+            <div style="font-weight:600;color:var(--accent-light);margin-bottom:4px;">2. Asma bronquial felina</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.8);">Sibilancias espiratorias, postura durante los accesos de tos, hiperinsuflación pulmonar. El asma también puede cursar con eosinofilia periférica y patrón broncoalveolar, por lo que no se excluye sin diagnóstico diferencial activo.</div>
+          </div>
+          <div>
+            <div style="font-weight:600;color:var(--accent-light);margin-bottom:4px;">3. Bronquitis eosinofílica crónica</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.8);">Eosinofilia en sangre periférica, proceso crónico. Diagnóstico de exclusión que comparte inflamación eosinofílica con el asma, pero sin el componente reversible de broncoespasmo.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P2 -->
+  <div class="card" id="caso-q2">
+    <div class="card-header" onclick="toggleCard('caso-q2')">
+      <div class="card-header-left">
+        <div>
+          <div class="card-taxon">Pregunta 2 · Diagnóstico</div>
+          <div class="card-name" style="font-size:1rem;font-style:normal;font-family:'Inter',sans-serif;font-weight:500;">¿Cuál es la técnica diagnóstica de primera elección? ¿Cómo se realiza y qué morfología tiene la larva?</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="card-body">
+      <div class="grid-2" style="margin-top:4px;">
+        <div class="info-block">
+          <h4>Técnica de Baermann · Procedimiento</h4>
+          <ul>
+            <li>15–20 g de heces frescas (&lt;2 h) en gasa sobre embudo de vidrio con agua</li>
+            <li>Incubar 12–24 h → larvas migran por gravedad al fondo</li>
+            <li>Recoger 5–10 mL del fondo → centrifugar 500 rpm × 3 min</li>
+            <li>Examinar sedimento: obj. 10× (búsqueda) y 40× (confirmación morfológica)</li>
+            <li>Un resultado negativo <strong>no descarta</strong> la infestación: la eliminación es intermitente</li>
+          </ul>
+        </div>
+        <div class="info-block" style="background:#FFE8D8;">
+          <h4>Morfología larval de A. abstrusus</h4>
+          <ul>
+            <li>Tamaño: <strong>360–400 µm</strong></li>
+            <li>Cola con <strong>ondulación en «S»</strong></li>
+            <li>Pequeña <strong>espina subterminal dorsal</strong></li>
+            <li>Estos rasgos distinguen <em>A. abstrusus</em> de <em>A. vasorum</em> (cola recta) y Strongyloides (&lt;300 µm)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P3 -->
+  <div class="card" id="caso-q3">
+    <div class="card-header" onclick="toggleCard('caso-q3')">
+      <div class="card-header-left">
+        <div>
+          <div class="card-taxon">Pregunta 3 · Radiología</div>
+          <div class="card-name" style="font-size:1rem;font-style:normal;font-family:'Inter',sans-serif;font-weight:500;">¿En qué se diferencia el patrón radiológico del asma felina del de aelurostrongilosis? ¿Es diagnóstica la radiografía?</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="card-body">
+      <div class="grid-2" style="margin-top:4px;">
+        <div class="info-block">
+          <h4>Asma felina</h4>
+          <ul>
+            <li>Patrón bronquial o broncoalveolar</li>
+            <li>Hiperdistensión pulmonar</li>
+            <li>Atelectasia lobular (típica: lóbulo medio derecho) en episodio agudo</li>
+            <li>Patrón nodular bien definido: <strong>infrecuente</strong></li>
+          </ul>
+        </div>
+        <div class="info-block" style="background:#FFE8D8;">
+          <h4>Aelurostrongilosis</h4>
+          <ul>
+            <li>Nódulos pequeños (1–5 mm) de bordes <strong>difusos</strong></li>
+            <li>Distribución bilateral, a veces confluentes</li>
+            <li>Posible calcificación en fases crónicas</li>
+          </ul>
+        </div>
+      </div>
+      <div class="diag-highlight" style="margin-top:14px;">
+        <strong>Conclusión:</strong> La radiografía orienta pero <strong>no es diagnóstica definitiva</strong>. El patrón nodular es más sugerente de aelurostrongilosis, pero ambas entidades pueden superponerse. La confirmación requiere Baermann.
+      </div>
+    </div>
+  </div>
+
+  <!-- P4 -->
+  <div class="card" id="caso-q4">
+    <div class="card-header" onclick="toggleCard('caso-q4')">
+      <div class="card-header-left">
+        <div>
+          <div class="card-taxon">Pregunta 4 · Baermann negativo</div>
+          <div class="card-name" style="font-size:1rem;font-style:normal;font-family:'Inter',sans-serif;font-weight:500;">Si el Baermann resulta negativo con alta sospecha clínica, ¿qué pasos adicionales están indicados?</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="card-body">
+      <div class="info-block" style="margin-top:4px;">
+        <h4>Pasos diagnósticos escalonados</h4>
+        <ul>
+          <li><strong>1.</strong> Repetir Baermann con muestras de <strong>3 días consecutivos</strong> (eliminación larvaria intermitente)</li>
+          <li><strong>2.</strong> Solicitar <strong>lavado broncoalveolar (LBA)</strong> por broncoscopia o lavado ciego: buscar L1, huevos o eosinófilos abundantes (eosinofilia en LBA &gt;17% sin larvas → orienta hacia asma felina)</li>
+          <li><strong>3.</strong> <strong>Prueba terapéutica con fenbendazol</strong> × 14 días y reevaluación clínica y radiológica: una respuesta favorable apoya el diagnóstico parasitario</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- P5 -->
+  <div class="card" id="caso-q5">
+    <div class="card-header" onclick="toggleCard('caso-q5')">
+      <div class="card-header-left">
+        <div>
+          <div class="card-taxon">Pregunta 5 · Tratamiento</div>
+          <div class="card-name" style="font-size:1rem;font-style:normal;font-family:'Inter',sans-serif;font-weight:500;">Confirme la infestación por A. abstrusus. Proponga tratamiento con fármaco, dosis, vía, duración y justificación.</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="card-body">
+      <div class="cycle-box" style="margin-top:4px;">
+        <h4>Tratamiento de elección · Baermann positivo confirmado</h4>
+        <div class="cycle-steps">
+          <span class="cycle-step">🔵 Fenbendazol 50 mg/kg PO</span>
+          <span class="cycle-arrow">·</span>
+          <span class="cycle-step">1 vez al día</span>
+          <span class="cycle-arrow">·</span>
+          <span class="cycle-step">14 días consecutivos</span>
+        </div>
+        <div class="cycle-note">Justificación: perfil de seguridad en gatos, eficacia demostrada, disponible en Chile (Panacur®).</div>
+      </div>
+      <div class="grid-2" style="margin-top:14px;">
+        <div class="info-block">
+          <h4>Alternativa (si rechaza medicación oral)</h4>
+          <ul>
+            <li>Imidacloprid + Moxidectina spot-on (Advocate®)</li>
+            <li>Aplicar mensualmente × 2 meses</li>
+          </ul>
+        </div>
+        <div class="info-block">
+          <h4>Seguimiento y soporte</h4>
+          <ul>
+            <li>Reevaluar clínicamente a las <strong>4 semanas</strong></li>
+            <li>Repetir Baermann al <strong>día 30</strong> post-tratamiento</li>
+            <li>Si signología grave: prednisolona 1 mg/kg/día × 5–7 días para reducir inflamación eosinofílica aguda</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /caso -->
+
+<!-- ═══════════════════════════════════ QUIZ ═══════════════════════════════════ -->
+<div class="section" id="quiz">
+  <div class="s-header">
+    <div class="s-icon" style="background:#E8E0F4;">🧠</div>
+    <div class="s-title">
+      <h2>Autoevaluación</h2>
+      <p>8 preguntas · Responde y recibe retroalimentación inmediata</p>
+    </div>
+  </div>
+
+  <div id="quiz-container"></div>
+  <div class="quiz-score" id="quiz-score">
+    <h3 id="score-text"></h3>
+    <p id="score-sub"></p>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<div class="footer">
+  Material basado en: Duaso J. Capítulo 11 — Nematodos pulmonares y otros nematodos de importancia clínica.<br>
+  Apunte Complementario Enfermedades Infecciosas y Parasitarias (beta).
+</div>
+
+<script>
+// ── TABS ──
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ── CARDS ──
+function toggleCard(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+// ── QUIZ DATA ──
+const questions = [
+  {
+    q: "¿Cuál es la técnica diagnóstica de elección para detectar larvas de nematodos pulmonares en heces?",
+    opts: ["Flotación con sulfato de zinc", "Técnica de Baermann", "Sedimentación simple", "McMaster modificado"],
+    correct: 1,
+    feedback: "La técnica de Baermann aprovecha la migración activa de larvas vivas hacia el agua. La flotación es ineficaz porque los huevos eclosionan antes de la eliminación fecal."
+  },
+  {
+    q: "¿Qué rasgo morfológico distingue a la larva L1 de Aelurostrongylus abstrusus de la de Angiostrongylus vasorum?",
+    opts: ["Mayor tamaño (&gt;500 µm)", "Cola con ondulación en «S» y espina subterminal dorsal", "Presencia de vaina", "Cola recta y sin espina"],
+    correct: 1,
+    feedback: "La L1 de A. abstrusus (360–400 µm) tiene una cola con ondulación en «S» + espina subterminal. A. vasorum tiene cola recta o levemente ondulada, sin esos rasgos."
+  },
+  {
+    q: "Dictyocaulus viviparus transmite sus larvas L3 de manera inusual en el ambiente gracias a:",
+    opts: ["Hospederos paraténicos (aves)", "El hongo Pilobolus spp. que proyecta larvas al estallar", "Moscas coprófagas vectores", "Caracoles terrestres como intermediarios"],
+    correct: 1,
+    feedback: "Pilobolus spp. crece en bostas bovinas y proyecta larvas L3 hasta 1 metro al explotar su esporangiófora, ampliando notablemente el radio de contaminación de la pastura."
+  },
+  {
+    q: "Un perro joven presenta tos, hematomas espontáneos y convulsiones. ¿Qué parásito debe sospecharse con mayor prioridad?",
+    opts: ["Dictyocaulus viviparus", "Aelurostrongylus abstrusus", "Angiostrongylus vasorum", "Muellerius capillaris"],
+    correct: 2,
+    feedback: "La tríada respiratorio + hemorrágico + neurológico es característica de A. vasorum, cuya coagulopatía (trombocitopenia, prolongación de TP/TTPA) puede generar hemorragias intracraneales."
+  },
+  {
+    q: "¿Cuál es el período prepatente aproximado de Dictyocaulus viviparus?",
+    opts: ["5–7 días", "14 días", "28 días", "60 días"],
+    correct: 2,
+    feedback: "El período prepatente de D. viviparus es aproximadamente 28 días (rango 22–35 días según carga infestante e inmunidad)."
+  },
+  {
+    q: "El ciclo de Angiostrongylus vasorum es similar al de Aelurostrongylus abstrusus porque ambos:",
+    opts: [
+      "Tienen ciclo directo sin hospedero intermediario",
+      "Requieren moluscos como hospederos intermediarios y pueden usar paraténicos",
+      "Parasitan exclusivamente los bronquios principales",
+      "Se diagnostican sólo por ELISA"
+    ],
+    correct: 1,
+    feedback: "Ambos son metastrongilidos con ciclo indirecto: necesitan moluscos (babosas/caracoles) como hospederos intermediarios y pueden amplificar su ciclo mediante hospederos paraténicos (aves, ranas, roedores)."
+  },
+  {
+    q: "En un gato con Baermann negativo y alta sospecha de aelurostrongilosis, el siguiente paso más indicado es:",
+    opts: [
+      "Asumir asma felina e iniciar corticoides",
+      "Repetir Baermann en 3 días consecutivos y/o realizar lavado broncoalveolar",
+      "Iniciar ivermectina IM a dosis alta",
+      "Solicitar únicamente radiografía de control"
+    ],
+    correct: 1,
+    feedback: "La eliminación larvaria es intermitente; repetir el Baermann en días consecutivos aumenta la sensibilidad. El LBA puede revelar larvas o huevos en casos de Baermann persistentemente negativo con alta sospecha clínica."
+  },
+  {
+    q: "¿Por qué los caprinos pueden requerir dosis de antihelmínticos hasta un 50% mayores que los ovinos?",
+    opts: [
+      "Por ser más grandes en promedio",
+      "Porque metabolizan los antihelmínticos más rápidamente",
+      "Porque los parásitos son más resistentes en caprinos",
+      "Porque la vía de administración siempre es oral en caprinos"
+    ],
+    correct: 1,
+    feedback: "Los caprinos metabolizan varios antihelmínticos más rápido que los ovinos, lo que reduce el tiempo de exposición del parásito al fármaco. Esto puede requerir ajuste de dosis, siempre verificando con el fabricante y la legislación vigente."
+  }
+];
+
+let score = 0;
+let answered = 0;
+
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  questions.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-q';
+    div.id = 'q' + i;
+    div.innerHTML = `
+      <p>${i+1}. ${q.q}</p>
+      <div class="quiz-options">
+        ${q.opts.map((o, j) => `<button class="quiz-opt" onclick="answer(${i}, ${j})">${o}</button>`).join('')}
+      </div>
+      <div class="quiz-feedback" id="fb${i}">${q.feedback}</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function answer(qi, selected) {
+  const q = questions[qi];
+  const qDiv = document.getElementById('q' + qi);
+  const buttons = qDiv.querySelectorAll('.quiz-opt');
+  if (qDiv.dataset.answered) return;
+  qDiv.dataset.answered = '1';
+  answered++;
+  buttons.forEach((b, j) => {
+    b.disabled = true;
+    if (j === q.correct) b.classList.add('correct');
+    else if (j === selected) b.classList.add('wrong');
+  });
+  if (selected === q.correct) score++;
+  document.getElementById('fb' + qi).classList.add('show');
+  if (answered === questions.length) showScore();
+}
+
+function showScore() {
+  const el = document.getElementById('quiz-score');
+  el.style.display = 'block';
+  const pct = Math.round(score / questions.length * 100);
+  let msg = pct >= 80 ? '¡Excelente dominio del tema!' : pct >= 60 ? 'Buen avance, revisa los errores.' : 'Repasa los contenidos y vuelve a intentarlo.';
+  document.getElementById('score-text').textContent = `${score} / ${questions.length} correctas (${pct}%)`;
+  document.getElementById('score-sub').textContent = msg;
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+buildQuiz();
+</script>
+</body>
+</html>
